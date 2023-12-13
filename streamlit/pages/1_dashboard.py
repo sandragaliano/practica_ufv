@@ -6,8 +6,7 @@ import seaborn as sns
 @st.cache_data
 def load_data():
     # Cargar conjunto de datos de Taylor Swift
-    df = pd.read_csv("/home/sandra/repositorios/repos/practica_ufv/streamlit/pages/taylor_swift_spotify.csv")
-    # Realiza cualquier preprocesamiento necesario en tus datos aquí
+    df = pd.read_csv("./taylor_swift_spotify.csv")
     return df
 
 def info_box(texto, color=None):

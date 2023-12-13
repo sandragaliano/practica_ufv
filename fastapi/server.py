@@ -1,17 +1,16 @@
-import shutil
 import io
+import shutil
 from fastapi.responses import JSONResponse
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile,Form
 import pandas as pd
-from typing import List
+from typing import  List
 from pydantic import BaseModel as PydanticBaseModel
-from fastapi.middleware.cors import CORSMiddleware
-import streamlit as st
 
 
-class BaseModel(PydanticBaseModel):
+class BaseModel(BaseModel):
     class Config:
         arbitrary_types_allowed = True
+
 
 class Cancion(BaseModel):
     x: int
@@ -33,41 +32,23 @@ class Cancion(BaseModel):
     popularity: int
     duration_ms: int
 
+
 class ListaCanciones(BaseModel):
     canciones: List[Cancion]
 
+
 app = FastAPI(
     title="Servidor de datos",
-    description="""Servimos datos de canciones de Taylor Swift.""",
+    description="Datos de canciones de Taylor Swift.",
     version="0.1.0",
 )
 
-# Configurar CORS
-origins = ["*"]  # Esto permite solicitudes desde cualquier origen, ajusta según sea necesario
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 @app.get("/retrieve_data/")
 def retrieve_data():
-    try:
-        df = pd.read_csv('/home/sandra/repositorios/repos/practica_ufv/streamlit/pages/taylor_swift_spotify.csv')
-        # Renombrar columnas según corresponda
-        df = df.rename(columns={
-            "x": "x",
-            "name": "name",
-            # ... otras columnas ...
-        })
-        canciones_dict = df.to_dict(orient='records')
-        lista_canciones = ListaCanciones(canciones=canciones_dict)
-        return lista_canciones
-    except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=500)
-
-# Indica a Streamlit que sirva el contenido en la ruta /dashboard
-if st.get_option("server.enableCORS"):
-    st.markdown(f'<iframe src="http://localhost:8501/" width=1000 height=800></iframe>', unsafe_allow_html=True)
+    todosmisdatos = pd.read_csv('/.taylor_swift.spotify.csv',sep=',')
+    todosmisdatos = todosmisdatos.fillna(0)
+    todosmisdatosdict = todosmisdatos.to_dict(orient='records')
+    listado = ListaCanciones()
+    listado.canciones = todosmisdatosdict
+    return listado
