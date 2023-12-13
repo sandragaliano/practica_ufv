@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  
+
   fastapi:
     build: fastapi/
     ports:
@@ -25,6 +25,8 @@ services:
 networks:
   deploy_network:
     driver: bridge
-    
+
 volumes:
    mis_datos:
+
+
