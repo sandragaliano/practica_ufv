@@ -1,6 +1,7 @@
 # Práctica final programación II
 
 
+    Hola, esto es una prueba para ver si sale en el dashboard. ¿Qué tal Sandra del futuro?
     Este ejemplo lo he adaptado de la documentación oficial de [streamlit.io](https://streamlit.io), 
     de su [documentación](https://docs.streamlit.io) y de un proyecto de investigación. Se usa para visualizar datos
     en forma de dashboard, aunque también tiene capacidad para hacer apps web de tipo CRUD con un `backend` como [fastapi](https://fastapi.tiangolo.com).

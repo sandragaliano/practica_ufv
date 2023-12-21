@@ -3,11 +3,16 @@ import shutil
 from fastapi.responses import JSONResponse
 from fastapi import FastAPI, File, UploadFile,Form
 import pandas as pd
-from typing import  List
+from typing import List
+from pydantic import BaseModel as PydanticBaseModel
+from fastapi.responses import JSONResponse
+from fastapi import FastAPI, File, UploadFile, Form
+import pandas as pd
+from typing import List
 from pydantic import BaseModel as PydanticBaseModel
 
 
-class BaseModel(BaseModel):
+class BaseModel(PydanticBaseModel):
     class Config:
         arbitrary_types_allowed = True
 
@@ -46,7 +51,7 @@ app = FastAPI(
 
 @app.get("/retrieve_data/")
 def retrieve_data():
-    todosmisdatos = pd.read_csv('/.taylor_swift.spotify.csv',sep=',')
+    todosmisdatos = pd.read_csv('/.taylor_swift.spotify.csv', sep=',')
     todosmisdatos = todosmisdatos.fillna(0)
     todosmisdatosdict = todosmisdatos.to_dict(orient='records')
     listado = ListaCanciones()
