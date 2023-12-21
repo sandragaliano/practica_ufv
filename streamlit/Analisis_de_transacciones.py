@@ -16,7 +16,7 @@ with placeholder:
 placeholder.empty()
 
 
-st.write("# Vamos a ello 👋")
+st.write("# (Hola Sandra)Vamos a ello 👋")
 
 st.sidebar.success("Selecciona la única página que te voy a dejar seleccionar. Eres libre de seleccionar.")
 
