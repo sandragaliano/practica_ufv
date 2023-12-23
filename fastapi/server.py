@@ -1,11 +1,9 @@
 import io
-import shutil
 from fastapi.responses import JSONResponse
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, File, UploadFile
 import pandas as pd
 from typing import List
 from pydantic import BaseModel as PydanticBaseModel
-
 
 class BaseModel(PydanticBaseModel):
     class Config:
@@ -44,11 +42,17 @@ app = FastAPI(
 )
 
 
-@app.get("/retrieve_data/")
-def retrieve_data():
-    todosmisdatos = pd.read_csv('/taylor_swift_spotify.csv', sep=',')
-    todosmisdatos = todosmisdatos.fillna(0)
-    todosmisdatosdict = todosmisdatos.to_dict(orient='records')
-    listado = ListaCanciones()
-    listado.canciones = todosmisdatosdict
-    return listado
+
+# Modificando la función retrieve_data
+@app.post("/retrieve_data/")
+async def retrieve_data(file: UploadFile = File(...)):
+    try:
+        contenido_csv = await file.read()
+        df = pd.read_csv(io.BytesIO(contenido_csv), sep=',')
+        df = df.fillna(0)
+        df_dict = df.to_dict(orient='records')
+        listado = ListaCanciones()
+        listado.canciones = df_dict
+        return listado
+    except Exception as e:
+        return JSONResponse(content=f"Error: {str(e)}", status_code=500)

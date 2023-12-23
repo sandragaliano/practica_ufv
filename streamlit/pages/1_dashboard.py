@@ -2,6 +2,8 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 import seaborn as sns
+import requests
+
 
 @st.cache_data
 def load_data():
@@ -11,17 +13,41 @@ def load_data():
 
 
 def info_box(texto, color=None):
-    st.markdown(f'<div style="background-color:#4EBAE1;opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{texto}</p></div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div style="background-color:#4EBAE1;opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{texto}</p></div>',
+        unsafe_allow_html=True)
+
+
+# Nuevo método para cargar datos mediante una solicitud POST
+def load_data_post(file):
+    content_type = 'text/csv'
+    files = {'file': ('file.csv', file, content_type)}
+    response = requests.post('http://127.0.0.1:8000/upload_data/', files=files)
+
+    if response.status_code == 200:
+        return pd.DataFrame(response.json()['canciones'])
+    else:
+        raise ValueError(f"Error en la carga de datos: {response.text}")
 
 df = load_data()
 registros = str(df.shape[0])
 
+# Cambiando retrieve_data_post para llamar a load_data_post
+def retrieve_data_post(file):
+    try:
+        df = load_data_post(file)
+        return df
+    except Exception as e:
+        st.error(f"Error en la carga de datos: {str(e)}")
+
 # Gráfica 1: Canciones por álbum
 
-# Elemento de filtro para seleccionar un álbum
+# Elemento de filtro para seleccionar un álbum y hacer la gráfica interactiva
 album_seleccionado = st.selectbox('Selecciona un álbum:', df['album'].unique())
-# Crear un diccionario de mapeo de colores para cada álbum
+
+# Diccionario de mapeo de colores para cada álbum
 color_map = {album: px.colors.qualitative.Set1[i % len(px.colors.qualitative.Set1)] for i, album in enumerate(df['album'].unique())}
+
 # Filtrar el DataFrame por el álbum seleccionado para la gráfica de barras
 canciones_por_album = df[df['album'] == album_seleccionado][['name', 'popularity']]
 canciones_por_album_chart = px.bar(
