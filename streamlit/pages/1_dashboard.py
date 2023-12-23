@@ -45,17 +45,48 @@ def retrieve_data_post(file):
 # Elemento de filtro para seleccionar un álbum y hacer la gráfica interactiva
 album_seleccionado = st.selectbox('Selecciona un álbum:', df['album'].unique())
 
-# Diccionario de mapeo de colores para cada álbum
-color_map = {album: px.colors.qualitative.Set1[i % len(px.colors.qualitative.Set1)] for i, album in enumerate(df['album'].unique())}
+# Diccionario de colores personalizados para cada álbum
+color_map = {
+    "1989 (Taylor's Version) [Deluxe]": 'lightseagreen',
+    "1989 (Taylor's Version)": 'lightseagreen',
+    '1989 (Deluxe Edition)': 'lightseagreen',
+    'Midnights (The Til Dawn Edition)': 'midnightblue',
+    'Midnights (3am Edition)': 'midnightblue',
+    'Midnights': 'midnightblue',
+    'Lover': 'pink',
+    '1989': 'cyan',
+    'Red': 'maroon',
+    'Red (Deluxe Edition)': 'maroon',
+    'reputation': 'black',
+    'reputation Stadium Tour Surprise Song Playlist': 'black',
+    'Speak Now World Tour Live': 'mediumpurple',
+    'Speak Now': 'mediumpurple',
+    'Speak Now (Deluxe Edition)': 'mediumpurple',
+    "Speak Now (Taylor's Version)": "mediumpurple",
+    "Red (Taylor's Version)": 'maroon',
+    "Fearless Platinum Edition": 'burlywood',
+    "Fearless": 'burlywood',
+    "Live From Clear Channel Stripped 2008": 'burlywood',
+    "Taylor Swift": 'seagreen',
+    "Fearless (Taylor's Version)": "burlywood",
+    "evermore (deluxe version)": 'darkgoldenrod',
+    'evermore': 'darkgoldenrod',
+    "folklore": 'silver',
+    'folklore (deluxe version)': 'silver',
+    'folklore: the long pond studio sessions (from the Disney+ special)[deluxe edition]': 'silver'}
 
 # Filtrar el DataFrame por el álbum seleccionado para la gráfica de barras
 canciones_por_album = df[df['album'] == album_seleccionado][['name', 'popularity']]
 canciones_por_album_chart = px.bar(
     canciones_por_album, x='name', y='popularity',
-    color_discrete_map={album_seleccionado: color_map[album_seleccionado]},
     title=f'Popularidad de Canciones por Álbum ({album_seleccionado})',
     labels={'name': 'Canción', 'popularity': 'Popularidad'},
 )
+
+# Modificar el color de las barras según el álbum seleccionado
+color_album = color_map.get(album_seleccionado, 'blue')
+canciones_por_album_chart.update_traces(marker_color=color_album)
+
 
 # Gráfica 2: Top 10 Canciones Populares como Pie Chart
 # Usamos las 10 canciones con mayor número de popularidad:
