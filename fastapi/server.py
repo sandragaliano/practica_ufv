@@ -1,15 +1,18 @@
+import shutil
+
 import io
 from fastapi.responses import JSONResponse
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile,Form
 import pandas as pd
 from typing import List
 from pydantic import BaseModel as PydanticBaseModel
+from pydantic import BaseModel, Field
 
 class BaseModel(PydanticBaseModel):
     class Config:
         arbitrary_types_allowed = True
 
-class Cancion(BaseModel):
+class Contrato(BaseModel):
     x: int
     name: str
     album: str
@@ -29,10 +32,8 @@ class Cancion(BaseModel):
     popularity: int
     duration_ms: int
 
-
-class ListaCanciones(BaseModel):
-    canciones: List[Cancion]
-
+class ListadoContratos(BaseModel):
+    contratos = List[Contrato]
 
 app = FastAPI(
     title="Servidor de datos",
@@ -40,36 +41,11 @@ app = FastAPI(
     version="0.1.0",
 )
 
-from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List
-from fastapi.responses import JSONResponse
-
-import pandas as pd
-from io import BytesIO
-
-
-class ListadoContratos(BaseModel):
-    contratos: List[dict]
-
-
-app = FastAPI()
-
-
 @app.get("/retrieve_data/")
 def retrieve_data():
-    try:
-        # Lee el archivo CSV
-        taylor_swift_data = pd.read_csv('./taylor_swift_spotify.csv', sep=',')
-        taylor_swift_data = taylor_swift_data.fillna(0)
-
-        # Convierte los datos a un formato de diccionario
-        taylor_swift_data_dict = taylor_swift_data.to_dict(orient='records')
-
-        # Crea una instancia de ListadoContratos y asigna los datos
-        listado = ListadoContratos()
-        listado.contratos = taylor_swift_data_dict
-
-        return listado
-    except Exception as e:
-        return JSONResponse(content=f"Error: {str(e)}", status_code=500)
+    todosmisdatos = pd.read_csv('./taylor_swift_spotify.csv', sep=';')
+    todosmisdatos = todosmisdatos.fillna(0)
+    todosmisdatosdict = todosmisdatos.to_dict(orient='records')
+    listado = ListadoContratos()
+    listado.contratos = todosmisdatosdict
+    return listado

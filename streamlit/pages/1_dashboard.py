@@ -1,34 +1,38 @@
+import matplotlib
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 import seaborn as sns
 import requests
+from matplotlib.backends.backend_agg import RendererAgg
+
 
 @st.cache_data
 def load_data(url: str):
-    response = requests.get(url)
-    if response.status_code == 200:
-        df_dict = response.json()['canciones']
-        return pd.DataFrame(df_dict)
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
     else:
-        raise ValueError(f"Error en la carga de datos: {response.text}")
+        mijson = r.json()
+        listado = mijson['contratos']
+        df = pd.DataFrame.from_records(listado)
+        return df
 
 def retrieve_data_post():
     try:
         response = requests.get('http://fastapi:8000/retrieve_data')
         if response.status_code == 200:
-            df_dict = response.json()['canciones']
+            df_dict = response.json()['songs']
             return pd.DataFrame(df_dict)
         else:
             raise ValueError(f"Error en la carga de datos: {response.text}")
     except Exception as e:
         st.error(f"Error en la carga de datos: {str(e)}")
 
-def info_box(texto, color=None):
-    st.markdown(f'<div style="background-color:{color};opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{texto}</p></div>', unsafe_allow_html=True)
+def info_box(text, color=None):
+    st.markdown(f'<div style="background-color:{color};opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{text}</p></div>', unsafe_allow_html=True)
 
 df = load_data('http://fastapi:8000/retrieve_data')
-
 
 registros = str(df.shape[0])
 
