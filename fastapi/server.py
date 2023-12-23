@@ -1,13 +1,8 @@
-import io
-from fastapi.responses import JSONResponse
-from fastapi import FastAPI, File, UploadFile
 import pandas as pd
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from typing import List
-from pydantic import BaseModel as PydanticBaseModel
-
-class BaseModel(PydanticBaseModel):
-    class Config:
-        arbitrary_types_allowed = True
 
 class Cancion(BaseModel):
     x: int
@@ -29,32 +24,14 @@ class Cancion(BaseModel):
     popularity: int
     duration_ms: int
 
-
-class ListaCanciones(BaseModel):
-    canciones: List[Cancion]
-
+class ListadoContratos(BaseModel):
+    contratos: List[dict]
 
 app = FastAPI(
     title="Servidor de datos",
     description="Datos de canciones de Taylor Swift.",
     version="0.1.0",
 )
-
-from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List
-from fastapi.responses import JSONResponse
-
-import pandas as pd
-from io import BytesIO
-
-
-class ListadoContratos(BaseModel):
-    contratos: List[dict]
-
-
-app = FastAPI()
-
 
 @app.get("/retrieve_data/")
 def retrieve_data():
@@ -72,4 +49,6 @@ def retrieve_data():
 
         return listado
     except Exception as e:
+        # Registra el error en los logs y devuelve una respuesta 500
+        print(f"Error: {str(e)}")
         return JSONResponse(content=f"Error: {str(e)}", status_code=500)
