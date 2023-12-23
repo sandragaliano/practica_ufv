@@ -78,7 +78,6 @@ color_map = {
 canciones_por_album = df[df['album'] == album_seleccionado][['name', 'popularity']]
 canciones_por_album_chart = px.bar(
     canciones_por_album, x='name', y='popularity',
-    title=f'Popularidad de Canciones por Álbum ({album_seleccionado})',
     labels={'name': 'Canción', 'popularity': 'Popularidad'},
 )
 
