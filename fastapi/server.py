@@ -9,7 +9,6 @@ class BaseModel(PydanticBaseModel):
     class Config:
         arbitrary_types_allowed = True
 
-
 class Cancion(BaseModel):
     x: int
     name: str
