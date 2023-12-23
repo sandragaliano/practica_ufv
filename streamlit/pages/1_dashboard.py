@@ -86,19 +86,29 @@ canciones_por_album_chart = px.bar(
 color_album = color_map.get(album_seleccionado, 'blue')
 canciones_por_album_chart.update_traces(marker_color=color_album)
 
-
 # Gráfica 2: Top 10 Canciones Populares como Pie Chart
 # Usamos las 10 canciones con mayor número de popularidad:
-canciones_populares = df.nlargest(10, 'popularity')[['name', 'popularity']]
+canciones_populares = df.nlargest(10, 'popularity')[['name', 'popularity', 'album']]
+# Agregamos una columna de colores basada en el álbum
+canciones_populares['color'] = canciones_populares['album'].map(color_map)
+
 # Gráfico de pie de las 10 con mayor popularidad:
 canciones_populares_chart = px.pie(
     canciones_populares, names='name', values='popularity',
+    color=canciones_populares['color'].tolist(),  # Utilizamos la columna de colores
     labels={'name': 'Canción', 'popularity': 'Popularidad'}
 )
 
-# Configuración de diseño para la leyenda y visibilidad del pie chart
+# Configuramos la leyenda
 canciones_populares_chart.update_layout(
-    legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='left', x=0)
+    legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='left', x=0),
+)
+
+# Seleccionamos un color por cada categoría para la leyenda
+canciones_populares_chart.update_traces(
+    hoverinfo='label+percent',
+    textinfo='value',
+    textfont_size=14,
 )
 
 
