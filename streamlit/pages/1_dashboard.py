@@ -11,7 +11,6 @@ def load_data():
     df = pd.read_csv('/home/sandra/repositorios/repos/practica_ufv/streamlit/pages/taylor_swift_spotify.csv', sep=',')
     return df
 
-
 def info_box(texto, color=None):
     st.markdown(
         f'<div style="background-color:#4EBAE1;opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{texto}</p></div>',
