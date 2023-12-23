@@ -40,18 +40,36 @@ app = FastAPI(
     version="0.1.0",
 )
 
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import List
+from fastapi.responses import JSONResponse
+
+import pandas as pd
+from io import BytesIO
 
 
-# Modificando la función retrieve_data
-@app.post("/retrieve_data/")
-async def retrieve_data(file: UploadFile = File(...)):
+class ListadoContratos(BaseModel):
+    contratos: List[dict]
+
+
+app = FastAPI()
+
+
+@app.get("/retrieve_data/")
+def retrieve_data():
     try:
-        contenido_csv = await file.read()
-        df = pd.read_csv(io.BytesIO(contenido_csv), sep=',')
-        df = df.fillna(0)
-        df_dict = df.to_dict(orient='records')
-        listado = ListaCanciones()
-        listado.canciones = df_dict
+        # Lee el archivo CSV
+        taylor_swift_data = pd.read_csv('./taylor_swift_spotify.csv', sep=',')
+        taylor_swift_data = taylor_swift_data.fillna(0)
+
+        # Convierte los datos a un formato de diccionario
+        taylor_swift_data_dict = taylor_swift_data.to_dict(orient='records')
+
+        # Crea una instancia de ListadoContratos y asigna los datos
+        listado = ListadoContratos()
+        listado.contratos = taylor_swift_data_dict
+
         return listado
     except Exception as e:
         return JSONResponse(content=f"Error: {str(e)}", status_code=500)

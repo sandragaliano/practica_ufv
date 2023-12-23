@@ -4,40 +4,33 @@ import streamlit as st
 import seaborn as sns
 import requests
 
-
 @st.cache_data
-def load_data():
-    # Cargar conjunto de datos de Taylor Swift
-    df = pd.read_csv('/home/sandra/repositorios/repos/practica_ufv/streamlit/pages/taylor_swift_spotify.csv', sep=',')
-    return df
-
-def info_box(texto, color=None):
-    st.markdown(
-        f'<div style="background-color:#4EBAE1;opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{texto}</p></div>',
-        unsafe_allow_html=True)
-
-
-# Nuevo método para cargar datos mediante una solicitud POST
-def load_data_post(file):
-    content_type = 'text/csv'
-    files = {'file': ('file.csv', file, content_type)}
-    response = requests.post('http://127.0.0.1:8000/upload_data/', files=files)
-
+def load_data(url: str):
+    response = requests.get(url)
     if response.status_code == 200:
-        return pd.DataFrame(response.json()['canciones'])
+        df_dict = response.json()['canciones']
+        return pd.DataFrame(df_dict)
     else:
         raise ValueError(f"Error en la carga de datos: {response.text}")
 
-df = load_data()
-registros = str(df.shape[0])
-
-# Cambiando retrieve_data_post para llamar a load_data_post
-def retrieve_data_post(file):
+def retrieve_data_post():
     try:
-        df = load_data_post(file)
-        return df
+        response = requests.get('http://fastapi:8000/retrieve_data')
+        if response.status_code == 200:
+            df_dict = response.json()['canciones']
+            return pd.DataFrame(df_dict)
+        else:
+            raise ValueError(f"Error en la carga de datos: {response.text}")
     except Exception as e:
         st.error(f"Error en la carga de datos: {str(e)}")
+
+def info_box(texto, color=None):
+    st.markdown(f'<div style="background-color:{color};opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{texto}</p></div>', unsafe_allow_html=True)
+
+df = load_data('http://fastapi:8000/retrieve_data')
+
+
+registros = str(df.shape[0])
 
 # Gráfica 1: Canciones por álbum
 
