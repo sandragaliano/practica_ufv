@@ -91,7 +91,7 @@ canciones_populares = df.nlargest(10, 'popularity')[['name', 'popularity', 'albu
 # Agregamos una columna de colores basada en el álbum
 canciones_populares['color'] = canciones_populares['album'].map(color_map)
 
-# Gráfico de pie de las 10 con mayor popularidad:
+# Gráfico de pie chart de las 10 con mayor popularidad:
 canciones_populares_chart = px.pie(
     canciones_populares, names='name', values='popularity',
     color=canciones_populares['color'].tolist(),  # Utilizamos la columna de colores
