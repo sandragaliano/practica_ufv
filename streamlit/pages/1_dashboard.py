@@ -6,7 +6,6 @@ import seaborn as sns
 import requests
 from matplotlib.backends.backend_agg import RendererAgg
 
-
 @st.cache_data
 def load_data(url: str):
     r = requests.get(url)
@@ -14,7 +13,7 @@ def load_data(url: str):
         return None
     else:
         mijson = r.json()
-        listado = mijson['contratos']
+        listado = mijson['canciones']
         df = pd.DataFrame.from_records(listado)
         return df
 
