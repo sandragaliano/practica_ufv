@@ -1,13 +1,12 @@
 import shutil
+
 import io
 from fastapi.responses import JSONResponse
 from fastapi import FastAPI, File, UploadFile,Form
 import pandas as pd
-from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List
+from typing import  List
+
 from pydantic import BaseModel as PydanticBaseModel
-from pydantic import BaseModel, Field
 
 class BaseModel(PydanticBaseModel):
     class Config:
@@ -34,7 +33,7 @@ class Cancion(BaseModel):
     duration_ms: int
 
 class ListadoCanciones(BaseModel):
-    canciones = List[Cancion]
+    canciones: List[Cancion]
 
 app = FastAPI(
     title="Servidor de datos",
