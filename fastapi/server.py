@@ -47,5 +47,6 @@ def retrieve_data():
     todosmisdatos = pd.read_csv('./taylor_swift_spotify.csv', sep=';')
     todosmisdatos = todosmisdatos.fillna(0)
     todosmisdatosdict = todosmisdatos.to_dict(orient='records')
-    listado = ListadoCanciones(canciones=todosmisdatosdict)
+    listado = ListadoCanciones()
+    listado.canciones = todosmisdatosdict
     return listado

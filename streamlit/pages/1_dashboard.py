@@ -31,7 +31,7 @@ def retrieve_data_post():
     try:
         response = requests.get('http://fastapi:8000/retrieve_data')
         if response.status_code == 200:
-            df_dict = response.json()['songs']
+            df_dict = response.json()['canciones']
             return pd.DataFrame(df_dict)
         else:
             raise ValueError(f"Error en la carga de datos: {response.text}")
