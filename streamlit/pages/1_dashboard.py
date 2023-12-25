@@ -1,15 +1,24 @@
-import matplotlib
+import os
 import pandas as pd
 import plotly.express as px
-import streamlit as st
 import seaborn as sns
+import streamlit as st
 import requests
-from matplotlib.backends.backend_agg import RendererAgg
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @st.cache_data
 def load_data(url: str):
-    df = pd.read_csv('./taylor_swift_spotify.csv',sep=',')
+    csv_path = os.path.join(BASE_DIR, 'taylor_swift_spotify.csv')
+    df = pd.read_csv(csv_path, sep=',')
     return df
+
+def info_box(texto, color=None):
+    st.markdown(f'<div style="background-color:{color};opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{texto}</p></div>', unsafe_allow_html=True)
+
+df = load_data('http://fastapi:8000/retrieve_data')
+
+registros = str(df.shape[0])
 
 def retrieve_data_post():
     try:
@@ -25,7 +34,6 @@ def retrieve_data_post():
 def info_box(text, color=None):
     st.markdown(f'<div style="background-color:{color};opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{text}</p></div>', unsafe_allow_html=True)
 
-df = load_data('http://fastapi:8000/retrieve_data')
 
 registros = str(df.shape[0])
 
