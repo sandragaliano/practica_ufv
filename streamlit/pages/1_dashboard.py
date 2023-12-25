@@ -8,14 +8,8 @@ from matplotlib.backends.backend_agg import RendererAgg
 
 @st.cache_data
 def load_data(url: str):
-    r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    else:
-        mijson = r.json()
-        listado = mijson['canciones']
-        df = pd.DataFrame.from_records(listado)
-        return df
+    df = pd.read_csv('./taylor_swift_spotify.csv',sep=',')
+    return df
 
 def retrieve_data_post():
     try:
