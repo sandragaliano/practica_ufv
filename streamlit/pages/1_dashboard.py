@@ -9,16 +9,14 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @st.cache_data
 def load_data(url: str):
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            df_dict = response.json()['canciones']
-            return pd.DataFrame(df_dict)
-        else:
-            raise ValueError(f"Error en la carga de datos: {response.text}")
-    except Exception as e:
-        st.error(f"Error en la carga de datos: {str(e)}")
+    r = requests.get(url)
+    if r.status_code != 200:
         return None
+    mijson = r.json()
+    listado = mijson['canciones']
+    df = pd.DataFrame.from_records(listado)
+
+    return df
 
 def info_box(texto, color=None):
     st.markdown(f'<div style="background-color:{color};opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{texto}</p></div>', unsafe_allow_html=True)
