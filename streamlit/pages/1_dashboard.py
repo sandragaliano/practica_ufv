@@ -9,9 +9,16 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @st.cache_data
 def load_data(url: str):
-    csv_path = os.path.join(BASE_DIR, 'taylor_swift_spotify.csv')
-    df = pd.read_csv(csv_path, sep=',')
-    return df
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            df_dict = response.json()['canciones']
+            return pd.DataFrame(df_dict)
+        else:
+            raise ValueError(f"Error en la carga de datos: {response.text}")
+    except Exception as e:
+        st.error(f"Error en la carga de datos: {str(e)}")
+        return None
 
 def info_box(texto, color=None):
     st.markdown(f'<div style="background-color:{color};opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{texto}</p></div>', unsafe_allow_html=True)
