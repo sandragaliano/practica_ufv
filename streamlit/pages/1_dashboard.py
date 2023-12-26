@@ -20,12 +20,17 @@ def load_data(url: str):
 
 df = load_data('http://fastapi:8000/retrieve_data')
 
-def info_box(texto, color=None):
-    st.markdown(f'<div style="background-color:{color};opacity:70%"><p style="text-align:center;color:white;font-size:30px;">{texto}</p></div>', unsafe_allow_html=True)
+def info_box(texto):
+    st.markdown(f'<p style="background-color:#4EBAE1; color:black; padding:10px; border-radius:5px; text-align:center; font-size:30px; margin:0;">{texto}</p>', unsafe_allow_html=True)
 
 # Verifica si df es None antes de intentar acceder a sus atributos
 if df is not None:
     registros = str(df.shape[0])
+    num_canciones = df['name'].nunique()
+    num_albumes = df['album'].nunique()
+    duracion_media = df['duration_ms'].mean()
+    duracion_media_str = str(round(duracion_media, 2))
+    registros = str(num_canciones)
 else:
     st.warning("No se pudo cargar el DataFrame. Verifica los errores anteriores.")
 
@@ -120,11 +125,11 @@ with col4:
 
 with col5:
     st.subheader('# álbumes')
-    info_box(str(len(df['album'].unique())))
+    info_box(num_albumes)
 
 with col6:
     st.subheader('Duración media')
-    info_box(str(round(df['duration_ms'].mean(), 2)))
+    info_box(duracion_media_str)
 
 # Col1: Gráfica de Barras
 st.subheader(f'Popularidad de Canciones por Álbum ({album_seleccionado})')
