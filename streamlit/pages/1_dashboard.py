@@ -111,6 +111,7 @@ relacion_popularidad_danceability_chart = px.scatter(
 sns.set_palette("pastel")
 
 # Título
+
 st.subheader("Taylor Swift: Person of the Year")
 
 col4, col5, col6 = st.columns(3)
