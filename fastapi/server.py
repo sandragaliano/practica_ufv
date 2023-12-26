@@ -32,7 +32,7 @@ class Cancion(BaseModel):
     duration_ms: int
 
 class ListadoCanciones(BaseModel):
-    canciones = List[Cancion]
+    canciones: List[Cancion]
 
 app = FastAPI(
     title="Servidor de datos",
